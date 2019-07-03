@@ -1,0 +1,26 @@
+{
+  "name": "library-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacobKnecht/library-manager.git"
+  },
+  "author": "Jacob Knecht",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacobKnecht/library-manager/issues"
+  },
+  "homepage": "https://github.com/JacobKnecht/library-manager#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pug": "^2.0.4",
+    "sequelize": "^5.9.2",
+    "sequelize-cli": "^5.5.0",
+    "sqlite3": "^4.0.9"
+  }
+}
