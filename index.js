@@ -17,7 +17,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
-app.get('/books', (req, res) => {}); 
+app.get('/books', (req, res) => {});
 
 //'/books/new' route shows the 'create new book' form GET
 app.get('/books/new', (req, res) => {
@@ -26,10 +26,12 @@ app.get('/books/new', (req, res) => {
 
 //'/books/new' route posts a new book to the database POST Book.create(req.body)
 app.post('/books/new', (req, res) => {
-
+  Book.create(req.body).then(book => {
+    res.redirect('/books/' + book.id);
+  });
 });
 
-//'/books/:id' route shows 'book detail' form GET
+//'/books/:id' route shows 'book detail' (update-book view) form GET
 app.get('/books/:id', (req, res) => {});
 
 //'/books/:id' route updates book info in the database POST
