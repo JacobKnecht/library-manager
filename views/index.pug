@@ -12,3 +12,10 @@ block content
         th Genre
         th Year
     tbody
+      each book, index in books
+        tr
+          td
+            a(href=`/books/${index}`) book.title
+          td book.author
+          td book.genre
+          td book.year
