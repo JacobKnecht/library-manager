@@ -19,9 +19,14 @@ app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
 app.get('/books', (req, res) => {
-  Book.findAll()
-  .then(books => {
-    res.render('index', {books, title: 'All Books'});
+  const books = [];
+  Book.findAll({raw: true})
+  .then(data => {
+    for(let prop in data) {
+      books.push(data[prop]);
+    }
+    //console.log(Array.isArray(books));
+    res.render('index', {books: books, title: 'All Books'});
   })
 });
 
