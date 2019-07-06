@@ -21,13 +21,12 @@ app.get('/', (req, res) => res.redirect('/books'));
 app.get('/books', (req, res) => {
   const books = [];
   Book.findAll({raw: true})
-  .then(data => {
-    for(let prop in data) {
-      books.push(data[prop]);
-    }
-    //console.log(Array.isArray(books));
-    res.render('index', {books: books, title: 'All Books'});
-  })
+    .then(data => {
+      for(let prop in data) {
+        books.push(data[prop]);
+      }
+      res.render('index', {books: books, title: 'All Books'});
+    })
 });
 
 //'/books/new' route shows the 'create new book' form GET
@@ -43,7 +42,12 @@ app.post('/books/new', (req, res) => {
 });
 
 //'/books/:id' route shows 'book detail' (update-book view) form GET
-app.get('/books/:id', (req, res) => {});
+app.get('/books/:id', (req, res) => {
+  Book.findByPk(req.params.id)
+    .then(book => {
+      res.render('update-book', {book: book, title: book.title});
+    })
+});
 
 //'/books/:id' route updates book info in the database POST
 app.post('/books/:id', (req, res) => {});
