@@ -19,10 +19,10 @@ app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
 app.get('/books', (req, res) => {
-  Book.findAll().then(books => {
-    console.log(books);
-    //res.render('index', {books, title: 'All Books'});
-  });
+  Book.findAll()
+  .then(books => {
+    res.render('index', {books, title: 'All Books'});
+  })
 });
 
 //'/books/new' route shows the 'create new book' form GET
