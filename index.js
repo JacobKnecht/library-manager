@@ -1,6 +1,7 @@
 //reqire statements
 const express = require('express');
 const path = require('path');
+const sequelize = require('./models').sequelize;
 const Book = require('./models').Book;
 
 //application variables
@@ -18,7 +19,10 @@ app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
 app.get('/books', (req, res) => {
-  res.render('index', {title: 'All Books'});
+  Book.findAll().then(books => {
+    console.log(books);
+    //res.render('index', {books, title: 'All Books'});
+  });
 });
 
 //'/books/new' route shows the 'create new book' form GET
@@ -59,5 +63,9 @@ app.use((err, req, res, next) => {
   console.log(`There was an error with the application: ${err}`);
 });
 
-//listen statement
-app.listen(port, () => console.log(`application is listening on port ${port}`));
+//listen statement - needs to occur after Book table has been created
+sequelize.sync().then(() => {
+  app.listen(port, () => {
+    console.log(`application is listening on port ${port}`);
+  });
+});
