@@ -1,11 +1,11 @@
 //reqire statements
 const express = require('express');
 const path = require('path');
-const Book = require('../models').Book;
+const Book = require('./models').Book;
 
 //application variables
 const app = express();
-const port = 5000;
+const port = 3000;
 
 //set view engine to Pug
 app.set('view engine', 'pug');
@@ -17,7 +17,9 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
-app.get('/books', (req, res) => {});
+app.get('/books', (req, res) => {
+  res.render('index', {title: 'All Books'});
+});
 
 //'/books/new' route shows the 'create new book' form GET
 app.get('/books/new', (req, res) => {
@@ -39,6 +41,11 @@ app.post('/books/:id', (req, res) => {});
 
 //'/books/:id/delete route deletes a book (can't be undone, use test book)' POST
 app.post('/books/:id/delete', (req, res) => {});
+
+//Handler to ignore requests for favicon.ico
+//such requests were triggering the 404 'not found' middleware though the
+//browser would render correctly matched routes
+app.get('/favicon.ico', (req, res) => res.status(204));
 
 //404/'Not Found' route
 app.use((req, res, next) => {
