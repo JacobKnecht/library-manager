@@ -1,12 +1,17 @@
 //reqire statements
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 const sequelize = require('./models').sequelize;
 const Book = require('./models').Book;
 
 //application variables
 const app = express();
 const port = 3000;
+
+//body parser to read form body data
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 //set view engine to Pug
 app.set('view engine', 'pug');
@@ -25,6 +30,7 @@ app.get('/books', (req, res) => {
       for(let prop in data) {
         books.push(data[prop]);
       }
+      console.log(books);
       res.render('index', {books: books, title: 'All Books'});
     })
 });
@@ -36,8 +42,9 @@ app.get('/books/new', (req, res) => {
 
 //'/books/new' route posts a new book to the database POST Book.create(req.body)
 app.post('/books/new', (req, res) => {
-  Book.create(req.body).then(book => {
-    res.redirect('/books/' + book.id);
+  Book.create(req.body).then(newBook => {
+    console.log(req.body);
+    res.redirect('/books');
   });
 });
 
@@ -50,7 +57,11 @@ app.get('/books/:id', (req, res) => {
 });
 
 //'/books/:id' route updates book info in the database POST
-app.post('/books/:id', (req, res) => {});
+app.post('/books/:id', (req, res) => {
+  Book.findByPk(req.params.id)
+    .then(book => book.update(req.body))
+    .then(book => res.redirect('/books'))
+});
 
 //'/books/:id/delete route deletes a book (can't be undone, use test book)' POST
 app.post('/books/:id/delete', (req, res) => {});
