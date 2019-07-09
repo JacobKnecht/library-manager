@@ -23,15 +23,20 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => res.redirect('/books'));
 
 //'/books' route shows the full list of books GET Book.findAll()
-app.get('/books', (req, res) => {
+app.get('/books', (req, res, next) => {
   const books = [];
   Book.findAll({raw: true})
     .then(data => {
       for(let prop in data) {
         books.push(data[prop]);
       }
-      console.log(books);
+      //console.log(books);
       res.render('index', {books: books, title: 'All Books'});
+    })
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
     })
 });
 
@@ -41,26 +46,42 @@ app.get('/books/new', (req, res) => {
 });
 
 //'/books/new' route posts a new book to the database POST Book.create(req.body)
-app.post('/books/new', (req, res) => {
-  Book.create(req.body).then(newBook => {
-    console.log(req.body);
-    res.redirect('/books');
-  });
+app.post('/books/new', (req, res, next) => {
+  Book.create(req.body)
+    .then(() => {
+      //console.log(req.body);
+      res.redirect('/books');
+    })
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
+    })
 });
 
 //'/books/:id' route shows 'book detail' (update-book view) form GET
-app.get('/books/:id', (req, res) => {
+app.get('/books/:id', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => {
       res.render('update-book', {book: book, title: book.title});
     })
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
+    })
 });
 
 //'/books/:id' route updates book info in the database POST
-app.post('/books/:id', (req, res) => {
+app.post('/books/:id', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => book.update(req.body))
     .then(book => res.redirect('/books'))
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
+    })
 });
 
 //'/books/:id/delete route deletes a book (can't be undone, use test book)' POST
@@ -73,13 +94,14 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 
 //404/'Not Found' route
 app.use((req, res, next) => {
-  const error = new Error('Not Found');
+  const error = new Error('Page Not Found');
   error.status = 404;
-  next(error);
+  res.render('page-not-found', {error});
 });
 
 //error handler route
 app.use((err, req, res, next) => {
+  res.render('error', {error: err});
   console.log(`There was an error with the application: ${err}`);
 });
 
