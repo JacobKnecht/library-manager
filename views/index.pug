@@ -19,3 +19,8 @@ block content
           td= book.author
           td= book.genre
           td= book.year
+  ul
+    - var i = 1;
+    while i < (pages + 1)
+      li
+        a(class='button', href=`/books/pages/${i}`)= i++
