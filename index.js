@@ -19,10 +19,10 @@ app.set('view engine', 'pug');
 //set static resource location
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
-//Home route
+//Home route - redirects to full list of books
 app.get('/', (req, res) => res.redirect('/books'));
 
-//'/books' route shows the full list of books GET Book.findAll()
+//'/books' route - shows the full list of books
 app.get('/books', (req, res, next) => {
   const books = [];
   Book.findAll({raw: true})
@@ -30,7 +30,6 @@ app.get('/books', (req, res, next) => {
       for(let prop in data) {
         books.push(data[prop]);
       }
-      //console.log(books);
       res.render('index', {books: books, title: 'All Books'});
     })
     .catch(err => {
@@ -40,17 +39,27 @@ app.get('/books', (req, res, next) => {
     })
 });
 
-//'/books/new' route shows the 'create new book' form GET
+//'/books/new' route - shows the 'create new book' form
 app.get('/books/new', (req, res) => {
   res.render('new-book', {book: Book.build(), title: 'New Book'});
 });
 
-//'/books/new' route posts a new book to the database POST Book.create(req.body)
+//'/books/new' route - posts a new book to the database
 app.post('/books/new', (req, res, next) => {
   Book.create(req.body)
     .then(() => {
-      //console.log(req.body);
       res.redirect('/books');
+    })
+    .catch(err => {
+      if(err.name === 'SequelizeValidationError') {
+        res.render('new-book', {
+          book: Book.build(req.body),
+          title: 'New Book',
+          errors: err.errors
+        });
+      } else {
+        throw err;
+      }
     })
     .catch(err => {
       const error = new Error('Server Error');
@@ -59,7 +68,7 @@ app.post('/books/new', (req, res, next) => {
     })
 });
 
-//'/books/:id' route shows 'book detail' (update-book view) form GET
+//'/books/:id' route - shows 'book detail' (update book) form
 app.get('/books/:id', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => {
@@ -72,11 +81,24 @@ app.get('/books/:id', (req, res, next) => {
     })
 });
 
-//'/books/:id' route updates book info in the database POST
+//'/books/:id' route - updates book info in the database
 app.post('/books/:id', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => book.update(req.body))
     .then(book => res.redirect('/books'))
+    .catch(err => {
+      if(err.name === 'SequelizeValidationError') {
+        let book = Book.build(req.body);
+        book.id = req.params.id;
+        res.render('update-book', {
+          book: book,
+          title: book.title,
+          errors: err.errors
+        });
+      } else {
+        throw err;
+      }
+    })
     .catch(err => {
       const error = new Error('Server Error');
       error.status = 500;
@@ -84,8 +106,17 @@ app.post('/books/:id', (req, res, next) => {
     })
 });
 
-//'/books/:id/delete route deletes a book (can't be undone, use test book)' POST
-app.post('/books/:id/delete', (req, res) => {});
+//'/books/:id/delete route - deletes a book
+app.post('/books/:id/delete', (req, res, next) => {
+  Book.findByPk(req.params.id)
+    .then(book => book.destroy())
+    .then(book => res.redirect('/books'))
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
+    })
+});
 
 //Handler to ignore requests for favicon.ico
 //such requests were triggering the 404 'not found' middleware though the
