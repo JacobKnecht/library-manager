@@ -7,18 +7,18 @@ block content
       h2.error Oooops!
       ul.error
         each error in errors
-          li= error.message              
+          li= error.message
     p
       label(for="title") Title
       input(name="title" type="text" id="title")
     p
-      label(for="title") Author
+      label(for="author") Author
       input(name="author" type="text" id="author")
     p
-      label(for="title") Genre
+      label(for="genre") Genre
       input(name="genre" type="text" id="genre")
     p
-      label(for="title") Year
+      label(for="year") Year
       input(name="year" type="text" id="year")
     p
       input(type="submit" value="Create New Book")
