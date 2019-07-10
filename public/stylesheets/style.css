@@ -48,6 +48,11 @@ ul {
   line-height: 1.3em;
 }
 
+li { /*added*/
+  display: inline-block; /*added*/
+  margin-right: 10px; /*added*/
+}
+
 h2 {
   border-top: 2px solid #e7e7e7;
   padding-top: 20px;
