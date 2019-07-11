@@ -20,17 +20,21 @@ app.set('view engine', 'pug');
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 //Home route - redirects to full list of books
-app.get('/', (req, res) => res.redirect('/books'));
+app.get('/', (req, res) => res.redirect('/books/pages/1'));
 
 //'/books' route - shows the full list of books
-app.get('/books', (req, res, next) => {
+app.get('/books/pages/:page', (req, res, next) => {
   const books = [];
-  Book.findAll({raw: true})
-    .then(data => {
-      for(let prop in data) {
-        books.push(data[prop]);
+  let page = req.params.page;
+  let limit = 5;
+  let offset = limit * (page - 1);
+  Book.findAndCountAll({raw: true, limit: limit, offset: offset})
+    .then(libraryData => {
+      let numberOfPages = Math.ceil(libraryData.count / limit);
+      for(let book in libraryData.rows) {
+        books.push(libraryData.rows[book]);
       }
-      res.render('index', {books: books, title: 'All Books'});
+      res.render('index', {books: books, title: 'All Books', pages: numberOfPages});
     })
     .catch(err => {
       const error = new Error('Server Error');
