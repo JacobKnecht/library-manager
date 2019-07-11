@@ -2,13 +2,13 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const sequelize = require('./models').sequelize;
+const Sequelize = require('./models').sequelize;
+const Op = require('Sequelize').Op;
 const Book = require('./models').Book;
 
 //application variables
 const app = express();
 const port = 3000;
-const op = sequelize.Op;
 
 //body parser to read form body data
 app.use(express.json());
@@ -52,18 +52,18 @@ app.get('/books/search', (req, res, next) => {
   Book.findAll({
     raw: true,
     where: {
-      $or: [
+      [Op.or]: [
         {
-          title: { $like: `%${searchTerm}%` }
+          title: { [Op.like]: `%${searchTerm}%` }
         }, //title
         {
-          author: { $like: `%${searchTerm}%` }
+          author: { [Op.like]: `%${searchTerm}%` }
         }, //author
         {
-          genre: { $like: `%${searchTerm}%` }
+          genre: { [Op.like]: `%${searchTerm}%` }
         }, //genre
         {
-          year: { $like: `%${searchTerm}%` }
+          year: { [Op.like]: `%${searchTerm}%` }
         } //year
       ]
     }
@@ -73,6 +73,7 @@ app.get('/books/search', (req, res, next) => {
       console.log(typeof searchData);
     })
     .catch(err => {
+      console.log(err);
       const error = new Error('Server Error');
       error.status = 500;
       next(error);
@@ -177,7 +178,7 @@ app.use((err, req, res, next) => {
 });
 
 //listen statement - needs to occur after Book table has been created
-sequelize.sync().then(() => {
+Sequelize.sync().then(() => {
   app.listen(port, () => {
     console.log(`application is listening on port ${port}`);
   });
