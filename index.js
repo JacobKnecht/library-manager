@@ -23,7 +23,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 //Home route - redirects to full list of books
 app.get('/', (req, res) => res.redirect('/books/pages/1'));
 
-//'/books' route - shows the full list of books
+//'/books/pages/:page' route - shows the full list of books
 app.get('/books/pages/:page', (req, res, next) => {
   const books = [];
   let page = req.params.page;
@@ -45,24 +45,26 @@ app.get('/books/pages/:page', (req, res, next) => {
 });
 
 //'/books/search' route - provides search functionality
-app.get('/books/search', (req, res) => {
-  let searchTerm = req.query.term;
+app.get('/books/search', (req, res, next) => {
+  let searchTerm = req.query.search;
+  console.log(searchTerm);
+  console.log(req);
   searchTerm = searchTerm.toLowerCase();
   Book.findAll({
     raw: true,
     where: {
-      [op.or]: [
+      $or: [
         {
-          title: { [op.like]: `%${searchTerm}%` }
+          title: { $like: `%${searchTerm}%` }
         }, //title
         {
-          author: { [op.like]: `%${searchTerm}%` }
+          author: { $like: `%${searchTerm}%` }
         }, //author
         {
-          genre: { [op.like]: `%${searchTerm}%` }
+          genre: { $like: `%${searchTerm}%` }
         }, //genre
         {
-          year: { [op.like]: `%${searchTerm}%` }
+          year: { $like: `%${searchTerm}%` }
         } //year
       ]
     }
@@ -163,7 +165,7 @@ app.post('/books/:id/delete', (req, res, next) => {
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 //404/'Not Found' route
-app.use((req, res, next) => {
+app.use((req, res) => {
   const error = new Error('Page Not Found');
   error.status = 404;
   res.render('page-not-found', {error});
