@@ -2,6 +2,10 @@ extends layout.pug
 
 block content
   h1 Books
+  form
+    P
+      input(name='search' type='search' id='search')
+      a(class='button' href='/books/search') Search
   p
     a(class='button', href='/books/new') Create New Book
   table
