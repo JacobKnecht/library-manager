@@ -69,6 +69,7 @@ app.get('/books/search', (req, res) => {
   })
     .then(searchData => {
       //render the search results here
+      console.log(typeof searchData);
     })
     .catch(err => {
       const error = new Error('Server Error');
@@ -86,7 +87,7 @@ app.get('/books/new', (req, res) => {
 app.post('/books/new', (req, res, next) => {
   Book.create(req.body)
     .then(() => {
-      res.redirect('/books');
+      res.redirect('/');
     })
     .catch(err => {
       if(err.name === 'SequelizeValidationError') {
@@ -123,7 +124,7 @@ app.get('/books/:id', (req, res, next) => {
 app.post('/books/:id', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => book.update(req.body))
-    .then(book => res.redirect('/books'))
+    .then(book => res.redirect('/'))
     .catch(err => {
       if(err.name === 'SequelizeValidationError') {
         let book = Book.build(req.body);
@@ -148,7 +149,7 @@ app.post('/books/:id', (req, res, next) => {
 app.post('/books/:id/delete', (req, res, next) => {
   Book.findByPk(req.params.id)
     .then(book => book.destroy())
-    .then(book => res.redirect('/books'))
+    .then(book => res.redirect('/'))
     .catch(err => {
       const error = new Error('Server Error');
       error.status = 500;
