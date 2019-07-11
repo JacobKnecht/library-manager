@@ -52,27 +52,23 @@ app.get('/books/search', (req, res) => {
     raw: true,
     where: {
       [op.or]: [
-        sequelize.where(
-          sequelize.fn('lower', sequelize.col('title')),
-          [op.like]: `%${searchTerm}%`
-        ), //title
-        sequelize.where(
-          sequelize.fn('lower', sequelize.col('author')),
-          [op.like]: `%${searchTerm}%`
-        ), //author
-        sequelize.where(
-          sequelize.fn('lower', sequelize.col('genre')),
-          [op.like]: `%${searchTerm}%`
-        ), //genre
-        sequelize.where(
-          sequelize.fn('lower', sequelize.col('year')),
-          [op.like]: `%${searchTerm}%`
-        ), //year
+        {
+          title: { [op.like]: `%${searchTerm}%` }
+        }, //title
+        {
+          author: { [op.like]: `%${searchTerm}%` }
+        }, //author
+        {
+          genre: { [op.like]: `%${searchTerm}%` }
+        }, //genre
+        {
+          year: { [op.like]: `%${searchTerm}%` }
+        } //year
       ]
     }
   })
     .then(searchData => {
-      //render the search results here 
+      //render the search results here
     })
     .catch(err => {
       const error = new Error('Server Error');
