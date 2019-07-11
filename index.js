@@ -8,6 +8,7 @@ const Book = require('./models').Book;
 //application variables
 const app = express();
 const port = 3000;
+const op = sequelize.Op;
 
 //body parser to read form body data
 app.use(express.json());
@@ -42,6 +43,43 @@ app.get('/books/pages/:page', (req, res, next) => {
       next(error);
     })
 });
+
+//'/books/search' route - provides search functionality
+app.get('/books/search', (req, res) => {
+  let searchTerm = req.query.term;
+  searchTerm = searchTerm.toLowerCase();
+  Book.findAll({
+    raw: true,
+    where: {
+      [op.or]: [
+        sequelize.where(
+          sequelize.fn('lower', sequelize.col('title')),
+          [op.like]: `%${searchTerm}%`
+        ), //title
+        sequelize.where(
+          sequelize.fn('lower', sequelize.col('author')),
+          [op.like]: `%${searchTerm}%`
+        ), //author
+        sequelize.where(
+          sequelize.fn('lower', sequelize.col('genre')),
+          [op.like]: `%${searchTerm}%`
+        ), //genre
+        sequelize.where(
+          sequelize.fn('lower', sequelize.col('year')),
+          [op.like]: `%${searchTerm}%`
+        ), //year
+      ]
+    }
+  })
+    .then(searchData => {
+      //render the search results here 
+    })
+    .catch(err => {
+      const error = new Error('Server Error');
+      error.status = 500;
+      next(error);
+    })
+})
 
 //'/books/new' route - shows the 'create new book' form
 app.get('/books/new', (req, res) => {
