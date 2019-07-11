@@ -47,9 +47,8 @@ app.get('/books/pages/:page', (req, res, next) => {
 //'/books/search' route - provides search functionality
 app.get('/books/search', (req, res, next) => {
   let searchTerm = req.query.search;
-  console.log(searchTerm);
-  console.log(req);
   searchTerm = searchTerm.toLowerCase();
+  console.log(searchTerm);
   Book.findAll({
     raw: true,
     where: {
