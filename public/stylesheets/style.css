@@ -25,8 +25,13 @@ a.button, input[type=submit] {
 }
 
 form a.button, input[type=submit] {
-  margin-left: 140px;
+  /*margin-left: 0; changed/removed*/
   transition: 0.4s;
+}
+
+.search-button { /*added*/
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 input[type=submit] {
