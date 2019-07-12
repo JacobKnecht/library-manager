@@ -26,10 +26,10 @@ app.get('/', (req, res) => res.redirect('/books/pages/1'));
 //'/books/pages/:page' route - shows the full list of books
 app.get('/books/pages/:page', (req, res, next) => {
   const books = [];
-  let page = req.params.page;
-  let limit = 5;
-  let offset = limit * (page - 1);
-  Book.findAndCountAll({raw: true, limit: limit, offset: offset})
+  const page = req.params.page;
+  const limit = 5;
+  const offset = limit * (page - 1);
+  Book.findAndCountAll({raw: true, limit, offset})
     .then(libraryData => {
       let numberOfPages = Math.ceil(libraryData.count / limit);
       for(let book in libraryData.rows) {
@@ -70,7 +70,8 @@ app.get('/books/search', (req, res, next) => {
   })
     .then(searchData => {
       //render the search results here
-      console.log(typeof searchData);
+      console.log(searchData.length);
+      res.render('index', {books: searchData, title: 'Search Results', inSearch: true});
     })
     .catch(err => {
       console.log(err);
