@@ -35,7 +35,11 @@ app.get('/books/pages/:page', (req, res, next) => {
       for(let book in libraryData.rows) {
         books.push(libraryData.rows[book]);
       }
-      res.render('index', {books: books, title: 'All Books', pages: numberOfPages});
+      res.render('index', {
+        books: books,
+        title: 'All Books',
+        pages: numberOfPages
+      });
     })
     .catch(err => {
       const error = new Error('Server Error');
@@ -69,9 +73,11 @@ app.get('/books/search', (req, res, next) => {
     }
   })
     .then(searchData => {
-      //render the search results here
-      console.log(searchData.length);
-      res.render('index', {books: searchData, title: 'Search Results', inSearch: true});
+      res.render('index', {
+        books: searchData,
+        title: 'Search Results',
+        inSearch: true
+      });
     })
     .catch(err => {
       console.log(err);
