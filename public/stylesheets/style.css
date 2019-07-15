@@ -38,9 +38,9 @@ input[type=submit] {
   border: 0;
 }
 
-  a.button:hover, input[type=submit]:hover {
-    background-color: #d65038; /*changed*/
-  }
+a.button:hover, input[type=submit]:hover {
+  background-color: #d65038; /*changed*/
+}
 
 p {
   margin: 20px auto;
