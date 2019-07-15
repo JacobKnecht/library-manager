@@ -1,4 +1,4 @@
-//reqire statements
+//require statements
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -23,7 +23,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 //Home route - redirects to full list of books
 app.get('/', (req, res) => res.redirect('/books/pages/1'));
 
-//'/books/pages/:page' route - shows the full list of books
+//'/books/pages/:page' route - shows the full list of books and provides pagination
 app.get('/books/pages/:page', (req, res, next) => {
   const books = [];
   const page = req.params.page;
@@ -51,7 +51,7 @@ app.get('/books/pages/:page', (req, res, next) => {
 //'/books/search' route - provides search functionality
 app.get('/books/search', (req, res, next) => {
   let searchTerm = req.query.search;
-  searchTerm = searchTerm.toLowerCase();
+  searchTerm = searchTerm.toLowerCase(); //make search term case insensitive
   console.log(searchTerm);
   Book.findAll({
     raw: true,
@@ -80,7 +80,6 @@ app.get('/books/search', (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
       const error = new Error('Server Error');
       error.status = 500;
       next(error);
@@ -166,7 +165,7 @@ app.post('/books/:id/delete', (req, res, next) => {
     })
 });
 
-//Handler to ignore requests for favicon.ico
+//handler to ignore requests for favicon.ico
 //such requests were triggering the 404 'not found' middleware though the
 //browser would render correctly matched routes
 app.get('/favicon.ico', (req, res) => res.status(204));
