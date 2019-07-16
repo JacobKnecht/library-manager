@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const Sequelize = require('./models').sequelize;
-const Op = require('Sequelize').Op;
+const Op = require('sequelize').Op;
 const Book = require('./models').Book;
 
 //application variables
