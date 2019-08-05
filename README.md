@@ -15,3 +15,9 @@ books, as well as forms to create books and update book information.
 Additionally, the templates render error pages for server errors and 'not found'
 errors. The application also provides pagination for the books list and a search
 form to allow users to search for books based on title, author, genre or year.
+
+Deployment - To deploy the project, simply download the project files, then
+navigate to the project directory in the terminal. Run the command 'npm install'
+to install the project dependencies, then run the command 'npm start' to run the
+application. The application will be running on port 3000, accessible through the
+URL localhost:3000 via web browser.
